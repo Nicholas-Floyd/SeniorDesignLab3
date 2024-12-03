@@ -1,0 +1,17 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Members</title>
+</head>
+<body>
+    <h1>Welcome to Our Team Page</h1>
+    <ul>
+        <li><a href="{{ url_for('team_member', member_id=1) }}">Team Member 1</a></li>
+        <li><a href="{{ url_for('team_member', member_id=2) }}">Team Member 2</a></li>
+        <li><a href="{{ url_for('team_member', member_id=3) }}">Team Member 3</a></li>
+        <li><a href="{{ url_for('team_member', member_id=4) }}">Team Member 4</a></li>
+    </ul>
+</body>
+</html>
