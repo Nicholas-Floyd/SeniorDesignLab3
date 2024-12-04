@@ -24,9 +24,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 def index():
     return render_template('index.html')
 
-@app.route('/team_member/<int:member_id>')
-def team_member(member_id):
-    return render_template(f'team_member_{member_id}.html', member_id=member_id)
+@app.route('/team_member/<name>')
+def team_member(name):
+    valid_names = ['nick', 'alex', 'michael', 'robby']  # List of valid team member names
+    name = name.lower()
+    if name in valid_names:
+        return render_template(f'{name}.html', name=name.capitalize())
+    else:
+        # Handle invalid names gracefully
+        return render_template('404.html'), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)
