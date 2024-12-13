@@ -26,10 +26,10 @@ def init_db():
     # Insert default user and team members
     default_user = ('defaultUser', generate_password_hash('Fall2024Lab3'))
     team_members = [
-        ('team_member1', generate_password_hash('password1')),
-        ('team_member2', generate_password_hash('password2')),
-        ('team_member3', generate_password_hash('password3')),
-        ('team_member4', generate_password_hash('password4'))
+        ('Nick', generate_password_hash('password1')),
+        ('Alex', generate_password_hash('password2')),
+        ('Michael', generate_password_hash('password3')),
+        ('Robby', generate_password_hash('password4'))
     ]
     db.executemany('INSERT OR REPLACE INTO users (username, password) VALUES (?, ?)',
                    [default_user] + team_members)
