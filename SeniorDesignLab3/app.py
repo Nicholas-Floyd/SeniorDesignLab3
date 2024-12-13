@@ -4,11 +4,22 @@ from flask import Flask, render_template, request, jsonify, current_app, g, redi
 from flask.cli import with_appcontext
 import click
 from werkzeug.security import generate_password_hash, check_password_hash
-import datetime
-from SeniorDesignLab3 import init_app, get_db
+from datetime import datetime
+from . import init_app, get_db
 from email.mime.text import MIMEText
 import smtplib
+from flask_wtf.csrf import CSRFProtect
 
+
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+
+
+
+class ContactForm(FlaskForm):
+    message = StringField('Message')
+    submit = SubmitField('Send')
 
 instance_path = os.path.join(os.getcwd(), 'instance')
 
@@ -16,8 +27,19 @@ if not os.path.exists(instance_path):
     os.makedirs(instance_path)
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'a3fcd9fa8d3e2ad7e7a16cfb3c5f9a48ed6c9b93f4f5a2c9'
+csrf = CSRFProtect(app)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app.config['DATABASE'] = os.path.join('instance', 'flaskr.sqlite')
+
+# Initialize the app
+init_app(app)
+
+
+#app.secret_key = os.environ.get('FLASK_SECRET_KEY')
+
+#app.config['DATABASE'] = os.path.join('instance', 'flaskr.sqlite')
 
 init_app(app)  # Call this to register commands and teardown logic
 
@@ -29,6 +51,7 @@ PHONE_NUMBERS = {
 }
 
 
+@csrf.exempt
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -52,7 +75,7 @@ def login():
     # If GET request, just show the login form
     return render_template('login.html')
 
-
+@csrf.exempt
 @app.route('/logout')
 def logout():
     # Clear session data
@@ -60,11 +83,13 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
-
+@csrf.exempt
 @app.route('/')
+
 def index():
     return render_template('index.html')
 
+@csrf.exempt
 @app.route('/protected')
 def protected():
     if not session.get('logged_in'):
@@ -72,6 +97,7 @@ def protected():
         return redirect(url_for('login'))
     return render_template('protected.html', username=session.get('username'))
 
+@csrf.exempt
 @app.route('/protected/messages')
 def list_messages():
     if not session.get('logged_in'):
@@ -88,6 +114,7 @@ def list_messages():
             messages.append({'filename': filename, 'name': name})
     return render_template('messages.html', messages=messages)
 
+@csrf.exempt
 @app.route('/protected/messages/<filename>')
 def view_message(filename):
     if not session.get('logged_in'):
@@ -102,13 +129,19 @@ def view_message(filename):
         content = f.read()
     return render_template('message_view.html', content=content)
 
-
+@csrf.exempt
 @app.route('/team_member/<name>')
 def team_member(name):
     valid_names = ['nick', 'alex', 'michael', 'robby']
     name = name.lower()
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        # If the form is submitted, redirect to the contact route
+        return redirect(url_for('contact', name=name))
+
     if name in valid_names:
-        return render_template(f'{name}.html', name=name.capitalize())
+        return render_template(f'{name}.html', name=name.capitalize(), form=form)
     else:
         return render_template('404.html'), 404
 
@@ -133,10 +166,9 @@ def send_sms_via_email(phone_number, message):
     except Exception as e:
         print(f"Failed to send SMS: {e}")
 
-
+@csrf.exempt
 @app.route('/contact/<name>', methods=['POST'])
 def contact(name):
-    from datetime import datetime
 
     # Check if the name exists in the PHONE_NUMBERS dictionary
     if name not in PHONE_NUMBERS:
@@ -179,7 +211,9 @@ def contact(name):
 
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+    # This block should only run in local development.
+ #   app.run(debug=True)
+
 
 
