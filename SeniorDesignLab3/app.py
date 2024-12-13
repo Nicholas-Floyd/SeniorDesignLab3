@@ -6,7 +6,8 @@ import click
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from SeniorDesignLab3 import init_app, get_db
-
+from email.mime.text import MIMEText
+import smtplib
 
 
 instance_path = os.path.join(os.getcwd(), 'instance')
@@ -20,7 +21,12 @@ app.config['DATABASE'] = os.path.join('instance', 'flaskr.sqlite')
 
 init_app(app)  # Call this to register commands and teardown logic
 
-
+PHONE_NUMBERS = {
+    'nick': '13195303682',
+    'alex': '13199308672',
+    'michael': '15155203034',
+    'robby': None,  # Currently unknown
+}
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -66,6 +72,36 @@ def protected():
         return redirect(url_for('login'))
     return render_template('protected.html', username=session.get('username'))
 
+@app.route('/protected/messages')
+def view_messages():
+    # Check if the user is logged in
+    if not session.get('logged_in'):
+        flash('You must be logged in to view messages.', 'error')
+        return redirect(url_for('login'))
+
+    # Directory where messages are stored
+    directory = 'protected/messages'
+
+    # List all files in the directory
+    try:
+        files = os.listdir(directory)
+        messages = []
+        for file in files:
+            if file.endswith('.html'):
+                # Read the content of each file
+                file_path = os.path.join(directory, file)
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                messages.append({'filename': file, 'content': content})
+    except FileNotFoundError:
+        flash('No messages found.', 'info')
+        messages = []
+
+    # Pass messages to the template
+    return render_template('messages.html', messages=messages)
+
+
+
 
 @app.route('/team_member/<name>')
 def team_member(name):
@@ -77,13 +113,68 @@ def team_member(name):
         return render_template('404.html'), 404
 
 
+def send_sms_via_email(phone_number, message):
+    smtp_server = 'smtp.gmail.com'
+    smtp_port = 587
+    sender_email = 'team8esp32devkitv@gmail.com'
+    sender_password = 'lrfqscjgpmkwlnos'
+
+    msg = MIMEText(message)
+    msg['From'] = sender_email
+    msg['To'] = f'{phone_number}@email.uscc.net'  # Adjust carrier domain as needed
+    msg['Subject'] = 'SMS Notification'
+
+    try:
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(sender_email, sender_password)
+            server.send_message(msg)
+        print("SMS sent successfully!")
+    except Exception as e:
+        print(f"Failed to send SMS: {e}")
+
+
 @app.route('/contact/<name>', methods=['POST'])
 def contact(name):
-    message = request.form.get('message')
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(f'protected/messages/{name}_{timestamp}.html', 'w') as f:
-        f.write(f'<p>{message}</p><p>Timestamp: {timestamp}</p>')
-    flash('Message sent successfully!', 'success')
+    from datetime import datetime
+
+    # Check if the name exists in the PHONE_NUMBERS dictionary
+    if name not in PHONE_NUMBERS:
+        flash('Invalid team member.', 'error')
+        return redirect(url_for('index'))
+
+    phone_number = PHONE_NUMBERS.get(name)
+    if not phone_number:
+        flash('Phone number not available for this team member.', 'error')
+        return redirect(url_for('team_member', name=name))
+
+    # Get the message from the form
+    message = request.form.get('message').strip()
+    if not message:
+        flash('Message cannot be empty.', 'error')
+        return redirect(url_for('team_member', name=name))
+
+    # Create a timestamped and sanitized file name
+    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    safe_name = ''.join(c for c in name if c.isalnum())
+    directory = 'protected/messages'
+    os.makedirs(directory, exist_ok=True)
+    file_path = os.path.join(directory, f'{safe_name}_{timestamp}.html')
+
+    try:
+        # Save the message as a web page
+        with open(file_path, 'w') as f:
+            f.write(f'<p>{message}</p><p>Timestamp: {timestamp}</p>')
+
+        # Send the SMS
+        formatted_message = f"{message}\nTimestamp: {timestamp}"
+        send_sms_via_email(phone_number, formatted_message)
+
+        flash('Message sent successfully via SMS and saved!', 'success')
+    except Exception as e:
+        print(f"Error handling contact form: {e}")
+        flash('An error occurred while processing your request.', 'error')
+
     return redirect(url_for('team_member', name=name))
 
 

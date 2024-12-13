@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='content/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='content/style.css') }}">
+    <title>Messages</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Stored Messages</h1>
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>
+                <strong>{{ message.filename }}</strong>
+                <div>
+                    {{ message.content | safe }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No messages found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

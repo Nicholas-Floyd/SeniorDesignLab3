@@ -1,3 +1,10 @@
+<head>
+    <meta charset="utf-8" />
+    <!-- Linking to global.css and nickStyle.css using Flask's url_for -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='content/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='content/nickStyle.css') }}">
+</head>
+
 <div style="width: 100%; height: 100%; position: relative; background: white">
     <div style="width: 1440px; height: 140px; left: 0px; top: 0px; position: absolute; background: #FFCD00"></div>
     <div style="width: 270px; height: 2411px; left: 0px; top: 140px; position: absolute; background: #F0F0F0"></div>
@@ -12,7 +19,7 @@
     <div style="left: 29px; top: 228px; position: absolute; color: black; font-size: 24px; font-family: Zilla Slab; font-weight: 400; text-decoration: underline; word-wrap: break-word">Nick Floyd</div>
     <div style="left: 29px; top: 292px; position: absolute; color: black; font-size: 24px; font-family: Zilla Slab; font-weight: 400; text-decoration: underline; word-wrap: break-word">Robby Modica</div>
     <div style="left: 30px; top: 356px; position: absolute; color: black; font-size: 24px; font-family: Zilla Slab; font-weight: 400; text-decoration: underline; word-wrap: break-word">Alex Viner</div>
-    <div style="left: 34px; top: 0px; position: absolute; color: #FFCD00; font-size: 96px; font-family: Antonio; font-weight: 700; word-wrap: break-word">Lab 3<br/></div>
+    <div style="left: 34px; top: 0px; position: absolute; color: #FFCD00; font-size: 96px; font-family: Antonio; font-weight: 700; word-wrap: break-word">Lab 3<br /></div>
     <div style="width: 100px; height: 100px; left: 102px; top: 34px; position: absolute"></div>
     <div style="left: 312px; top: 554px; position: absolute; color: black; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">Single Player Dice Game</div>
     <div style="left: 309px; top: 689px; position: absolute; color: black; font-size: 24px; font-family: Roboto; font-weight: 700; word-wrap: break-word">USD Exchange Computation GUI </div>
@@ -33,171 +40,12 @@
     <img style="width: 348px; height: 211px; left: 1066px; top: 799px; position: absolute" src="https://via.placeholder.com/348x211" />
 </div>
 
-// Alex Viner
-color: black;
- font-size: 64px;
- font-family: Zilla Slab;
- font-weight: 700;
- text-decoration: underline;
- word-wrap: break-word
----
-// Projects
-color: black;
- font-size: 48px;
- font-family: Zilla Slab;
- font-weight: 400;
- word-wrap: break-word
----
-// Undergrad Senior in Electrical (Computer) Engineering
-color: #545454;
- font-size: 36px;
- font-family: Zilla Slab;
- font-weight: 400;
- word-wrap: break-word
----
-// Team Members
-color: black;
- font-size: 32px;
- font-family: Zilla Slab;
- font-weight: 500;
- text-decoration: underline;
- word-wrap: break-word
----
-// Michael West
-color: black;
- font-size: 24px;
- font-family: Zilla Slab;
- font-weight: 400;
- text-decoration: underline;
- word-wrap: break-word
----
-// Nick Floyd
-color: black;
- font-size: 24px;
- font-family: Zilla Slab;
- font-weight: 400;
- text-decoration: underline;
- word-wrap: break-word
----
-// Robby Modica
-color: black;
- font-size: 24px;
- font-family: Zilla Slab;
- font-weight: 400;
- text-decoration: underline;
- word-wrap: break-word
----
-// Alex Viner
-color: black;
- font-size: 24px;
- font-family: Zilla Slab;
- font-weight: 400;
- text-decoration: underline;
- word-wrap: break-word
----
-// Lab 3<br/>
-color: #FFCD00;
- font-size: 96px;
- font-family: Antonio;
- font-weight: 700;
- word-wrap: break-word
----
-// Single Player Dice Game
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// USD Exchange Computation GUI 
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// Digital Thermometer Web-Interface
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// Frequency Selective Digital Filter
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// Remotely Controllable ADC/DAC Logging System
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// Smart Temperature Control Prototype
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 700;
- word-wrap: break-word
----
-// alexander-viner@uiowa.edu
-color: #0D5D92;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- text-decoration: underline;
- word-wrap: break-word
----
-// +1(319) 930-8672
-color: #0D5D92;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- text-decoration: underline;
- word-wrap: break-word
----
-// Single-player dice game implemented using a JavaFX GUI where a user is given a target score to reach in a set amount of rolls.
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
----
-// Graphical user interface used for calculating exchange rates between foreign currencies and USD.
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
----
-// Compact receiver device using a digital filter that sends SMS text messages when the light transmission is interrupted, similar to a garage door receiver.
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
----
-// Web-interface used to track the historical data of digital temperature sensors. Box enclosure capable of rough handling conditions connected the sensors to ESP32 for transmission.
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
----
-// Developed temperature control system prototype using small CPU fan, real-time clock, and temperature sensor to emulate a smart thermostat device on an LCD display. 
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
----
-// Analog-to-Digital and Digital-to-Analog converter system capable of sending data and receiving commands for voltage adjustments from a remote terminal.
-color: black;
- font-size: 24px;
- font-family: Roboto;
- font-weight: 300;
- word-wrap: break-word
+<div class="contact-form">
+    <h2>Contact Me</h2>
+    <form action="{{ url_for('contact', name='alex') }}" method="POST">
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" placeholder="Enter your message here..." required></textarea><br>
+        <button type="submit">Send Message</button>
+    </form>
+</div>
+
