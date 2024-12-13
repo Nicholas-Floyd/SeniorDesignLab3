@@ -31,7 +31,6 @@ PHONE_NUMBERS = {
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    session.clear()
     if request.method == 'POST':
         # Retrieve form data
         username = request.form.get('username')
