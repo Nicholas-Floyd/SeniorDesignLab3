@@ -5,66 +5,22 @@ from flask.cli import with_appcontext
 import click
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+from SeniorDesignLab3 import init_app, get_db
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
 
-# Ensure instance folder exists
+
 instance_path = os.path.join(os.getcwd(), 'instance')
-print(f"Instance path: {instance_path}")
 
 if not os.path.exists(instance_path):
     os.makedirs(instance_path)
 
-app.config['DATABASE'] = os.path.join(instance_path, 'flaskr.sqlite')
+app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
+app.config['DATABASE'] = os.path.join('instance', 'flaskr.sqlite')
+
+init_app(app)  # Call this to register commands and teardown logic
 
 
-def init_db():
-    db = get_db()
-    # Make sure you have a `schema.sql` file in a `database` directory
-    with app.open_resource('SeniorDesignLab3/Database/schema.sql', mode='r') as f:
-        db.executescript(f.read())
-
-    # Insert default user and team members
-    default_user = ('defaultUser', generate_password_hash('Fall2024Lab3'))
-    team_members = [
-        ('team_member1', generate_password_hash('password1')),
-        ('team_member2', generate_password_hash('password2')),
-        ('team_member3', generate_password_hash('password3')),
-        ('team_member4', generate_password_hash('password4'))
-    ]
-
-    db.executemany(
-        'INSERT OR REPLACE INTO users (username, password) VALUES (?, ?)',
-        [default_user] + team_members
-    )
-    db.commit()
-
-
-@click.command('init-db')
-@with_appcontext
-def init_db_command():
-    """Clear existing data and create new tables."""
-    init_db()
-    click.echo('Initialized the database.')
-
-app.cli.add_command(init_db_command)
-
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect(
-            app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
-    return g.db
-
-def close_db(e=None):
-    db = g.pop('db', None)
-    if db is not None:
-        db.close()
-
-app.teardown_appcontext(close_db)
 
 
 @app.route('/login', methods=['GET', 'POST'])

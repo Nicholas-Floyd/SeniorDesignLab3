@@ -2,7 +2,7 @@ import sqlite3
 from werkzeug.security import generate_password_hash
 
 def update_password(username, new_password):
-    db = sqlite3.connect('SeniorDesignLab3/instance/flaskr.sqlite')  
+    db = sqlite3.connect('instance/flaskr.sqlite')  
     hashed_password = generate_password_hash(new_password)
     db.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_password, username))
     db.commit()
