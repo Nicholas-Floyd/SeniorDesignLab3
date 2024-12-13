@@ -31,6 +31,7 @@ PHONE_NUMBERS = {
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    session.clear()
     if request.method == 'POST':
         # Retrieve form data
         username = request.form.get('username')
@@ -73,34 +74,34 @@ def protected():
     return render_template('protected.html', username=session.get('username'))
 
 @app.route('/protected/messages')
-def view_messages():
-    # Check if the user is logged in
+def list_messages():
     if not session.get('logged_in'):
-        flash('You must be logged in to view messages.', 'error')
+        flash('You must be logged in to access this page.', 'error')
         return redirect(url_for('login'))
-
-    # Directory where messages are stored
     directory = 'protected/messages'
-
-    # List all files in the directory
-    try:
-        files = os.listdir(directory)
-        messages = []
-        for file in files:
-            if file.endswith('.html'):
-                # Read the content of each file
-                file_path = os.path.join(directory, file)
-                with open(file_path, 'r') as f:
-                    content = f.read()
-                messages.append({'filename': file, 'content': content})
-    except FileNotFoundError:
-        flash('No messages found.', 'info')
-        messages = []
-
-    # Pass messages to the template
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    # Get all message files
+    messages = []
+    for filename in os.listdir(directory):
+        if filename.endswith('.html'):
+            name = filename.split('_')[0]  # Extract the team member name from the filename
+            messages.append({'filename': filename, 'name': name})
     return render_template('messages.html', messages=messages)
 
-
+@app.route('/protected/messages/<filename>')
+def view_message(filename):
+    if not session.get('logged_in'):
+        flash('You must be logged in to access this page.', 'error')
+        return redirect(url_for('login'))
+    directory = 'protected/messages'
+    file_path = os.path.join(directory, filename)
+    if not os.path.exists(file_path):
+        flash('Message not found.', 'error')
+        return redirect(url_for('list_messages'))
+    with open(file_path, 'r') as f:
+        content = f.read()
+    return render_template('message_view.html', content=content)
 
 
 @app.route('/team_member/<name>')
@@ -178,17 +179,6 @@ def contact(name):
     return redirect(url_for('team_member', name=name))
 
 
-@app.route('/nick-embedded-systems')
-def nick_embedded_systems():
-    return render_template('nicksPages/nick-embedded-systems.html')
-
-@app.route('/nick-senior-design')
-def nick_senior_design():
-    return render_template('nicksPages/nick-senior-design.html')
-
-@app.route('/nick-iec')
-def nick_iec():
-    return render_template('nicksPages/nick-iec.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

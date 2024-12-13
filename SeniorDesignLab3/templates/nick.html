@@ -5,17 +5,31 @@
     <!-- Linking to global.css and nickStyle.css using Flask's url_for -->
     <link rel="stylesheet" href="{{ url_for('static', filename='content/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='content/nickStyle.css') }}">
+   
 </head>
 <body>
     <div class="desktop">
         <div class="div">
+
             <div class="overlap">
                 <div class="banner-background"></div>
                 <div class="home-link-background"></div>
-                <img class="hawkeye-icon" src="https://c.animaapp.com/Py6cgbYs/img/hawkeyeicon@2x.png" alt="Hawkeye Icon" />
                 <div class="text-wrapper">
                     <a href="{{ url_for('index') }}" class="no-link-style">IOWA</a>
                 </div>
+
+                <div class="auth-button" style="position: absolute; right: 20px; top: 20px;">
+                    {% if session.get('logged_in') %}
+                    <a href="{{ url_for('logout') }}" style="font-family: 'Zilla Slab'; font-size: 24px; text-decoration: none; color: black; background: #F0F0F0; padding: 10px 20px; border-radius: 8px; border: 1px solid #757575;">
+                        Logout
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" style="font-family: 'Zilla Slab'; font-size: 24px; text-decoration: none; color: black; background: #F0F0F0; padding: 10px 20px; border-radius: 8px; border: 1px solid #757575;">
+                        Login
+                    </a>
+                    {% endif %}
+                </div>
+
                 <div class="overlap-group">
                     <div class="text-wrapper-2">Team Members</div>
                     <div class="text-wrapper-3"><a href="{{ url_for('team_member', name='michael') }}">Michael West</a></div>
